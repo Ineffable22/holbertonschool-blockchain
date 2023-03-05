@@ -11,9 +11,8 @@
  */
 uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 {
-	const EC_POINT *point_curve;
-	const EC_GROUP *info_curve;
-	size_t len;
+	const EC_POINT *point_curve = NULL;
+	const EC_GROUP *info_curve = NULL;
 
 	if (!key || !pub)
 		return (NULL);
@@ -31,9 +30,10 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 		fprintf(stderr, "EC_KEY_get0_group failed\n");
 		return (NULL);
 	}
-	len = EC_POINT_point2oct(info_curve, point_curve,
-				 POINT_CONVERSION_UNCOMPRESSED, pub, EC_PUB_LEN, NULL);
-	if (len == 0)
+
+	if (!EC_POINT_point2oct(info_curve, point_curve,
+				POINT_CONVERSION_UNCOMPRESSED, pub,
+				EC_PUB_LEN, NULL))
 	{
 		fprintf(stderr, "EC_POINT_point2oct failed\n");
 		return (NULL);
