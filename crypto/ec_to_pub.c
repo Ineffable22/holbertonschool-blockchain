@@ -19,10 +19,9 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 		return (NULL);
 
 	point_curve = EC_KEY_get0_public_key(key);
-	if (!point_curve)
+	if (point_curve)
 	{
 		fprintf(stderr, "EC_KEY_get0_public_key failed\n");
-		EC_KEY_free((EC_KEY *)key);
 		return (NULL);
 	}
 	memset(pub, 0, EC_PUB_LEN);
@@ -30,7 +29,6 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 	if (!info_curve)
 	{
 		fprintf(stderr, "EC_KEY_get0_group failed\n");
-		EC_KEY_free((EC_KEY *)key);
 		return (NULL);
 	}
 	len = EC_POINT_point2oct(info_curve, point_curve,
@@ -38,8 +36,6 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 	if (len == 0)
 	{
 		fprintf(stderr, "EC_POINT_point2oct failed\n");
-		EC_KEY_free((EC_KEY *)key);
-		EC_GROUP_free((EC_GROUP *)info_curve);
 		return (NULL);
 	}
 	return (pub);
