@@ -19,7 +19,7 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 		return (NULL);
 
 	point_curve = EC_KEY_get0_public_key(key);
-	if (point_curve)
+	if (!point_curve)
 	{
 		fprintf(stderr, "EC_KEY_get0_public_key failed\n");
 		return (NULL);
