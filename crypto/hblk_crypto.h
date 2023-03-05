@@ -2,12 +2,13 @@
 #define _HBLK_CRYPTO_H_
 
 #include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+/* OpenSSL library */
 #include <openssl/sha.h>
 #include <openssl/ec.h>
 #include <openssl/obj_mac.h>
-#include <openssl/bn.h>
-#include <stdint.h>
-#include <string.h>
 
 /* This constant is the numerical identifier of the SECP256K1 elliptic curve */
 /* cryptography standard */
