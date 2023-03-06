@@ -2,7 +2,6 @@
 
 /**
  * ec_from_pub - Creates an EC_KEY structure given a public key
- * \param pub: Contains the public key to be converted
  * @pub: Contains the public key to be converted
  *
  * Return: a pointer to the created EC_KEY structure upon success,
@@ -10,10 +9,12 @@
  */
 EC_KEY *ec_from_pub(uint8_t const pub[EC_PUB_LEN])
 {
-	EC_KEY *key;
-	const EC_POINT *point;
-	const EC_GROUP *group;
+	EC_KEY *key = NULL;
+	const EC_POINT *point = NULL;
+	const EC_GROUP *group = NULL;
 
+	if (!pub)
+		return (NULL);
 	key = EC_KEY_new_by_curve_name(EC_CURVE);
 	if (!key)
 	{
@@ -29,10 +30,7 @@ EC_KEY *ec_from_pub(uint8_t const pub[EC_PUB_LEN])
 	}
 	point = EC_POINT_new(group);
 	if (!point)
-	{
-		EC_KEY_free(key);
-		return (NULL);
-	}
+		return (EC_KEY_free(key), NULL);
 	if (!EC_POINT_oct2point(group, (EC_POINT *)point, pub, EC_PUB_LEN, NULL))
 	{
 		fprintf(stderr, "EC_POINT_oct2point failed\n");
