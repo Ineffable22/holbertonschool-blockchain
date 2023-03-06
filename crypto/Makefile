@@ -20,9 +20,9 @@ SRC3 = test/ec_from_pub-main.c provided/_print_hex_buffer.c ec_from_pub.c ec_to_
 OBJ3 = $(patsubst %.c, obj/%.o, $(SRC3))
 NAME3 = ec_from_pub-test
 
-SRC4 =
+SRC4 = test/ec_save-main.c ec_save.c ec_create.c ec_to_pub.c provided/_print_hex_buffer.c
 OBJ4 = $(patsubst %.c, obj/%.o, $(SRC4))
-NAME4 =
+NAME4 = ec_save-test
 
 SRC5 =
 OBJ5 = $(patsubst %.c, obj/%.o, $(SRC5))
@@ -56,11 +56,11 @@ task2: directories $(HEADER) $(OBJ2)
 
 task3: directories $(HEADER) $(OBJ3)
 	$(CC) $(CFLAGS) $(OBJ3) -o $(NAME3) $(LIB)
-	./$(NAME3)
+	valgrind ./$(NAME3)
 
 task4: directories $(HEADER) $(OBJ4)
 	$(CC) $(CFLAGS) $(OBJ4) -o $(NAME4) $(LIB)
-	./$(NAME4)
+	./$(NAME4) alex
 
 clean:
 	$(foreach var, $(ALLNAME), $(RM) *~ $(var))
