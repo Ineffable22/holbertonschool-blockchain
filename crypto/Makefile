@@ -24,16 +24,16 @@ SRC4 = test/ec_save-main.c ec_save.c ec_create.c ec_to_pub.c provided/_print_hex
 OBJ4 = $(patsubst %.c, obj/%.o, $(SRC4))
 NAME4 = ec_save-test
 
-SRC5 =
+SRC5 = test/ec_load-main.c ec_load.c ec_save.c ec_create.c ec_to_pub.c provided/_print_hex_buffer.c
 OBJ5 = $(patsubst %.c, obj/%.o, $(SRC5))
-NAME5 =
+NAME5 = ec_load-test
 
-ALLOBJ = $(OBJ0) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4)
-ALLNAME = $(NAME0) $(NAME1) $(NAME2) $(NAME3) $(NAME4)
+ALLOBJ = $(OBJ0) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5)
+ALLNAME = $(NAME0) $(NAME1) $(NAME2) $(NAME3) $(NAME4) $(NAME5)
 
-.PHONY: task0 task1 task2 task3 task4
+.PHONY: task0 task1 task2 task3 task4 task5
 
-all: task0 task1 task2 task3 task4
+all: task0 task1 task2 task3 task4 task5
 
 directories:
 	mkdir -p obj bin obj/test obj/provided
@@ -60,7 +60,17 @@ task3: directories $(HEADER) $(OBJ3)
 
 task4: directories $(HEADER) $(OBJ4)
 	$(CC) $(CFLAGS) $(OBJ4) -o $(NAME4) $(LIB)
-	./$(NAME4) alex
+	./$(NAME4) miguel
+	ls -l miguel
+	openssl ec -text -noout -in miguel/key.pem
+	cat miguel/key.pem
+	cat miguel/key_pub.pem
+	rm -rf miguel
+
+task5: directories $(HEADER) $(OBJ5)
+	$(CC) $(CFLAGS) $(OBJ5) -o $(NAME5) $(LIB)
+	./$(NAME5) miguel
+	rm -rf miguel
 
 clean:
 	$(foreach var, $(ALLNAME), $(RM) *~ $(var))
