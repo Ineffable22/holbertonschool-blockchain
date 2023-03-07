@@ -37,6 +37,8 @@ OBJ7 = $(patsubst %.c, obj/%.o, $(SRC7))
 NAME7 = ec_verify-test
 
 STATICLIB = libhblk_crypto.a
+STATICLIBFILES = sha256.c ec_create.c ec_to_pub.c ec_from_pub.c ec_save.c ec_load.c ec_sign.c ec_verify.c
+STATICLIBOBJS = $(patsubst %.c, obj/%.o, $(STATICLIBFILES))
 
 ALLOBJ = $(OBJ0) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7)
 ALLNAME = $(NAME0) $(NAME1) $(NAME2) $(NAME3) $(NAME4) $(NAME5) $(NAME6) $(NAME7) $(STATICLIB)
@@ -91,8 +93,8 @@ task7: directories $(HEADER) $(OBJ7)
 	./$(NAME7)
 
 # Task 8
-libhblk_crypto.a: $(ALLOBJ)
-	ar rcs $(STATICLIB) $(ALLOBJ)
+libhblk_crypto.a: $(STATICLIBOBJS)
+	ar rcs $(STATICLIB) $(STATICLIBOBJS)
 
 
 clean:
