@@ -28,12 +28,16 @@ SRC5 = test/ec_load-main.c ec_load.c ec_save.c ec_create.c ec_to_pub.c provided/
 OBJ5 = $(patsubst %.c, obj/%.o, $(SRC5))
 NAME5 = ec_load-test
 
-ALLOBJ = $(OBJ0) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5)
-ALLNAME = $(NAME0) $(NAME1) $(NAME2) $(NAME3) $(NAME4) $(NAME5)
+SRC6 = test/ec_sign-main.c provided/_print_hex_buffer.c ec_sign.c ec_create.c
+OBJ6 = $(patsubst %.c, obj/%.o, $(SRC6))
+NAME6 = ec_sign-test
 
-.PHONY: task0 task1 task2 task3 task4 task5
+ALLOBJ = $(OBJ0) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5)  $(OBJ6)
+ALLNAME = $(NAME0) $(NAME1) $(NAME2) $(NAME3) $(NAME4) $(NAME5) $(NAME6)
 
-all: task0 task1 task2 task3 task4 task5
+.PHONY: directories task0 task1 task2 task3 task4 task5 task6 obj
+
+all: directories task0 task1 task2 task3 task4 task5 task6
 
 directories:
 	mkdir -p obj bin obj/test obj/provided
@@ -71,6 +75,10 @@ task5: directories $(HEADER) $(OBJ5)
 	$(CC) $(CFLAGS) $(OBJ5) -o $(NAME5) $(LIB)
 	./$(NAME5) miguel
 	rm -rf miguel
+
+task6: directories $(HEADER) $(OBJ6)
+	$(CC) $(CFLAGS) $(OBJ6) -o $(NAME6) $(LIB)
+	./$(NAME6)
 
 clean:
 	$(foreach var, $(ALLNAME), $(RM) *~ $(var))
