@@ -32,12 +32,18 @@ SRC6 = test/ec_sign-main.c provided/_print_hex_buffer.c ec_sign.c ec_create.c
 OBJ6 = $(patsubst %.c, obj/%.o, $(SRC6))
 NAME6 = ec_sign-test
 
-ALLOBJ = $(OBJ0) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5)  $(OBJ6)
-ALLNAME = $(NAME0) $(NAME1) $(NAME2) $(NAME3) $(NAME4) $(NAME5) $(NAME6)
+SRC7 = test/ec_verify-main.c provided/_print_hex_buffer.c ec_verify.c ec_sign.c ec_create.c
+OBJ7 = $(patsubst %.c, obj/%.o, $(SRC7))
+NAME7 = ec_verify-test
 
-.PHONY: directories task0 task1 task2 task3 task4 task5 task6 obj
+STATICLIB = libhblk_crypto.a
 
-all: directories task0 task1 task2 task3 task4 task5 task6
+ALLOBJ = $(OBJ0) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7)
+ALLNAME = $(NAME0) $(NAME1) $(NAME2) $(NAME3) $(NAME4) $(NAME5) $(NAME6) $(NAME7) $(STATICLIB)
+
+.PHONY: directories task0 task1 task2 task3 task4 task5 task6 task7 libhblk_crypto.a obj
+
+all: directories task0 task1 task2 task3 task4 task5 task6 task7 libhblk_crypto.a
 
 directories:
 	mkdir -p obj bin obj/test obj/provided
@@ -45,7 +51,7 @@ directories:
 obj/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Task 0-4
+# Task 0-8
 task0: directories $(HEADER) $(OBJ0)
 	$(CC) $(CFLAGS) $(OBJ0) -o $(NAME0) $(LIB)
 	./$(NAME0) "Holberton School"
@@ -79,6 +85,15 @@ task5: directories $(HEADER) $(OBJ5)
 task6: directories $(HEADER) $(OBJ6)
 	$(CC) $(CFLAGS) $(OBJ6) -o $(NAME6) $(LIB)
 	./$(NAME6)
+
+task7: directories $(HEADER) $(OBJ7)
+	$(CC) $(CFLAGS) $(OBJ7) -o $(NAME7) $(LIB)
+	./$(NAME7)
+
+# Task 8
+libhblk_crypto.a: $(ALLOBJ)
+	ar rcs $(STATICLIB) $(ALLOBJ)
+
 
 clean:
 	$(foreach var, $(ALLNAME), $(RM) *~ $(var))
