@@ -5,7 +5,7 @@
  * @key: Points to the EC_KEY structure containing the private key to be used
  * to perform the signature
  * @msg: Points to the msglen characters to be signed
- * @msglen: length of the msglen characters
+ * @msglen: Length of the msglen characters
  * @sig: Holds the address at which to store the signature
  *
  * Return: If either key or msg is NULL, your function must fail
