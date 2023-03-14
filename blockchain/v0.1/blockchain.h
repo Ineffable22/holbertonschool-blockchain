@@ -7,6 +7,7 @@
 #include <time.h>
 
 #define BLOCKCHAIN_DATA_MAX 1024
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
 /**
  * struct blockchain_s - Blockchain structure
@@ -73,7 +74,8 @@ typedef struct block_s
 	uint8_t hash[SHA256_DIGEST_LENGTH];
 } block_t;
 
-
 blockchain_t *blockchain_create(void);
+block_t *block_create(block_t const *prev, int8_t const *data,
+		      uint32_t data_len);
 
 #endif /* _BLOCKCHAIN_H_ */
