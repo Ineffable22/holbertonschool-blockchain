@@ -8,9 +8,9 @@ SRC0 = blockchain_create.c test/blockchain_create-main.c provided/_blockchain_pr
 OBJ0 = $(patsubst %.c, obj/%.o, $(SRC0))
 NAME0 = bin/blockchain_create-test
 
-SRC1 =
+SRC1 = blockchain_create.c block_create.c test/block_create-main.c provided/_blockchain_print.c provided/_blockchain_destroy.c
 OBJ1 = $(patsubst %.c, obj/%.o, $(SRC1))
-NAME1 =
+NAME1 = block_create-test
 
 SRC2 =
 OBJ2 = $(patsubst %.c, obj/%.o, $(SRC2))
