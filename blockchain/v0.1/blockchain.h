@@ -6,7 +6,6 @@
 #include <llist.h>
 #include <time.h>
 
-#define BLOCKCHAIN_DATA_MAX 1024
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
 /**
@@ -44,6 +43,8 @@ typedef struct block_info_s
 	uint8_t prev_hash[SHA256_DIGEST_LENGTH];
 } block_info_t;
 
+#define BLOCKCHAIN_DATA_MAX 1024
+
 /**
  * struct block_data_s - Block data
  *
@@ -77,5 +78,9 @@ typedef struct block_s
 blockchain_t *blockchain_create(void);
 block_t *block_create(block_t const *prev, int8_t const *data,
 		      uint32_t data_len);
+void block_destroy(block_t *block);
+void blockchain_destroy(blockchain_t *blockchain);
+uint8_t *block_hash(block_t const *block,
+		    uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
 
 #endif /* _BLOCKCHAIN_H_ */
