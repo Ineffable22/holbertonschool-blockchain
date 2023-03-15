@@ -10,19 +10,19 @@ NAME0 = bin/blockchain_create-test
 
 SRC1 = blockchain_create.c block_create.c test/block_create-main.c provided/_blockchain_print.c provided/_blockchain_destroy.c
 OBJ1 = $(patsubst %.c, obj/%.o, $(SRC1))
-NAME1 = block_create-test
+NAME1 = bin/block_create-test
 
-SRC2 =
+SRC2 = blockchain_create.c block_create.c block_destroy.c test/block_destroy-main.c provided/_blockchain_destroy.c
 OBJ2 = $(patsubst %.c, obj/%.o, $(SRC2))
-NAME2 =
+NAME2 = bin/block_destroy-test
 
-SRC3 =
+SRC3 = blockchain_destroy.c blockchain_create.c block_create.c block_destroy.c test/blockchain_destroy-main.c
 OBJ3 = $(patsubst %.c, obj/%.o, $(SRC3))
-NAME3 =
+NAME3 = bin/blockchain_destroy-test
 
-SRC4 =
+SRC4 = blockchain_create.c block_create.c block_destroy.c blockchain_destroy.c block_hash.c test/block_hash-main.c provided/_blockchain_destroy.c provided/_blockchain_print.c
 OBJ4 = $(patsubst %.c, obj/%.o, $(SRC4))
-NAME4 =
+NAME4 = bin/block_hash-test
 
 SRC5 =
 OBJ5 = $(patsubst %.c, obj/%.o, $(SRC5))
@@ -60,11 +60,11 @@ task1: directories $(OBJ1)
 
 task2: directories $(HEADER) $(OBJ2)
 	$(CC) $(CFLAGS) $(OBJ2) -o $(NAME2) $(LIB)
-	./$(NAME2)
+	valgrind ./$(NAME2)
 
 task3: directories $(HEADER) $(OBJ3)
 	$(CC) $(CFLAGS) $(OBJ3) -o $(NAME3) $(LIB)
-	./$(NAME3)
+	valgrind ./$(NAME3)
 
 task4: directories $(HEADER) $(OBJ4)
 	$(CC) $(CFLAGS) $(OBJ4) -o $(NAME4) $(LIB)
