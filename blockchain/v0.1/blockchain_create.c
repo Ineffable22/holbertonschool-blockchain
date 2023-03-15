@@ -26,8 +26,8 @@ block_data_t create_block_data(void)
 {
 	char *data = "Holberton School";
 	block_data_t block_data = {
-	    {0},		   /* buffer */
-	    (uint32_t)strlen(data) /* len */
+	    {0}, /* buffer */
+	    16	 /* len */
 	};
 
 	memcpy(block_data.buffer, data, BLOCKCHAIN_DATA_MAX);
