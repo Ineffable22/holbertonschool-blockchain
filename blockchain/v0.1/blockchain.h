@@ -2,9 +2,12 @@
 #define _BLOCKCHAIN_H_
 
 #include "../../crypto/hblk_crypto.h"
+#include "provided/endianness.h"
 /* Linked list C library */
 #include <llist.h>
 #include <time.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
@@ -76,11 +79,16 @@ typedef struct block_s
 } block_t;
 
 blockchain_t *blockchain_create(void);
+block_info_t create_block_info(void);
+block_data_t create_block_data(void);
 block_t *block_create(block_t const *prev, int8_t const *data,
 		      uint32_t data_len);
 void block_destroy(block_t *block);
 void blockchain_destroy(blockchain_t *blockchain);
 uint8_t *block_hash(block_t const *block,
 		    uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
+int blockchain_serialize(blockchain_t const *blockchain, char const *path);
+blockchain_t *blockchain_deserialize(char const *path);
+int block_is_valid(block_t const *block, block_t const *prev_block);
 
 #endif /* _BLOCKCHAIN_H_ */
