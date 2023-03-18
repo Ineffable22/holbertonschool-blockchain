@@ -27,7 +27,7 @@ int block_is_valid(block_t const *block, block_t const *prev_block)
 		"\x04\x51\x58\x03"
 	};
 
-	if (!block || (!prev_block && block->info.index))
+	if (!block || (!prev_block && block->info.index != 0))
 		return (1);
 	if (block->info.index == 0)
 		return (memcmp(block, &block_info, sizeof(block_t)));
