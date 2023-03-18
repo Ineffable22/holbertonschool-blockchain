@@ -49,7 +49,7 @@ blockchain_t *blockchain_create(void)
 		     "\x04\x51\x58\x03";
 	/* c52c26c8b5461639635d8edf2a97d48d0c8e0009c817f2b1d3d7ff2f04515803 */
 
-	block = malloc(sizeof(block_t));
+	block = calloc(1, sizeof(block_t));
 	if (!block)
 		return (NULL);
 	block->info = create_block_info();
@@ -62,7 +62,7 @@ blockchain_t *blockchain_create(void)
 	if (llist_add_node(chain, block, ADD_NODE_FRONT) == -1)
 		return (free(block), free(chain), NULL);
 
-	blockchain = malloc(sizeof(blockchain_t));
+	blockchain = calloc(1, sizeof(blockchain_t));
 	if (!blockchain)
 		return (free(block), free(chain), NULL);
 	blockchain->chain = chain;
