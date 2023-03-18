@@ -56,7 +56,7 @@ blockchain_t *blockchain_create(void)
 	block->data = create_block_data();
 	memcpy(&(block->hash), hash, SHA256_DIGEST_LENGTH);
 
-	chain = llist_create(MT_SUPPORT_TRUE);
+	chain = llist_create(MT_SUPPORT_FALSE);
 	if (!chain)
 		return (free(block), NULL);
 	if (llist_add_node(chain, block, ADD_NODE_FRONT) == -1)
