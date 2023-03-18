@@ -24,13 +24,10 @@ block_info_t create_block_info(void)
  */
 block_data_t create_block_data(void)
 {
-	char *data = "Holberton School";
 	block_data_t block_data = {
-	    {0}, /* buffer */
-	    16	 /* len */
+	    "Holberton School", /* buffer */
+	    16			/* len */
 	};
-
-	memcpy(block_data.buffer, data, BLOCKCHAIN_DATA_MAX);
 	return (block_data);
 }
 
