@@ -52,7 +52,7 @@ obj/%.o: %.c
 # Task 0-7
 task0: directories $(HEADER) $(OBJ0)
 	$(CC) $(CFLAGS) $(OBJ0) -o $(NAME0) $(LIB)
-	./$(NAME0)
+	valgrind ./$(NAME0)
 
 task1: directories $(OBJ1)
 	$(CC) $(CFLAGS) $(OBJ1) -o $(NAME1) $(LIB)
