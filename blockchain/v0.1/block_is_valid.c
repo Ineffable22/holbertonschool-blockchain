@@ -10,7 +10,7 @@
 int block_is_valid(block_t const *block, block_t const *prev_block)
 {
 	uint8_t hash_buf[SHA256_DIGEST_LENGTH] = {0};
-	const block_t block_info = {
+	block_t block_info = {
 		{
 			0,	    /* index */
 			0,	    /* difficulty */
@@ -19,8 +19,8 @@ int block_is_valid(block_t const *block, block_t const *prev_block)
 			{0}	    /* prev_hash[SHA256_DIGEST_LENGTH] */
 		},
 		{
-			{0}, /* buffer */
-			16   /* len */
+			"Holberton School",	/* buffer */
+			16			/* len */
 		},
 		"\xc5\x2c\x26\xc8\xb5\x46\x16\x39\x63\x5d\x8e\xdf\x2a\x97"
 		"\xd4\x8d\x0c\x8e\x00\x09\xc8\x17\xf2\xb1\xd3\xd7\xff\x2f"
