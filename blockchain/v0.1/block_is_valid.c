@@ -5,7 +5,7 @@
  * @block:      Points to the Block to check
  * @prev_block: Points to the previous Block in the Blockchain,
  *              or is NULL if block is the first Block of the chain
- * Return: 1 if valid, or 0 otherwise
+ * Return: 0 if valid, or 1 otherwise
  */
 int block_is_valid(block_t const *block, block_t const *prev_block)
 {
