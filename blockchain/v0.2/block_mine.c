@@ -6,11 +6,9 @@
  */
 void block_mine(block_t *block)
 {
-	uint64_t nonce = 0;
-
+	block->info.nonce = 0;
 	do {
-		block->info.nonce = nonce;
+		block->info.nonce += 1;
 		block_hash(block, block->hash);
-		nonce++;
 	} while (!hash_matches_difficulty(block->hash, block->info.difficulty));
 }
