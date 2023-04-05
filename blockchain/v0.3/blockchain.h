@@ -17,7 +17,7 @@
 /**
  * struct blockchain_s - Blockchain structure
  *
- * @chain: Linked list of pointers to block_t
+ * @chain:   Linked list of pointers to block_t
  * @unspent: Linked list of unspent transaction outputs
  */
 typedef struct blockchain_s
@@ -72,18 +72,36 @@ typedef struct block_data_s
 /**
  * struct block_s - Block structure
  *
- * @info: Block info
- * @data: Block data
+ * @info:         Block info
+ * @data:         Block data
  * @transactions: List of transactions
- * @hash: 256-bit digest of the Block, to ensure authenticity
+ * @hash:         256-bit digest of the Block, to ensure authenticity
  */
 typedef struct block_s
 {
-	block_info_t info; /* This must stay first */
-	block_data_t data; /* This must stay second */
-	llist_t     *transactions;
-	uint8_t hash[SHA256_DIGEST_LENGTH];
+	block_info_t info;                  /* This must stay first */
+	block_data_t data;                  /* This must stay second */
+	llist_t     *transactions;          /* This must stay third */
+	uint8_t hash[SHA256_DIGEST_LENGTH]; /* This must stay last */
 } block_t;
+
+/* GENESIS BLOCK - first block in the chain */
+#define GENESIS {                                                             \
+	{                           /* info */                                \
+		0,                  /* index */                               \
+		0,                  /* difficulty */                          \
+		1537578000,         /* timestamp */                           \
+		0,                  /* nonce */                               \
+		{0}                 /* prev_hash */                           \
+	},                                                                    \
+	{                           /* data */                                \
+		"Holberton School", /* buffer */                              \
+		16                  /* len */                                 \
+	},                                                                    \
+	NULL,                       /* Transaction */                         \
+	"\xc5\x2c\x26\xc8\xb5\x46\x16\x39\x63\x5d\x8e\xdf\x2a\x97\xd4\x8d"    \
+	"\x0c\x8e\x00\x09\xc8\x17\xf2\xb1\xd3\xd7\xff\x2f\x04\x51\x58\x03"    \
+}
 
 blockchain_t *blockchain_create(void);
 block_info_t create_block_info(void);
