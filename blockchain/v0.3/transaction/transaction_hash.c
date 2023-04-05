@@ -19,7 +19,7 @@ uint8_t *transaction_hash(transaction_t const *transaction,
 	len_out = llist_size(transaction->outputs);
 	if (!len_in || !len_out)
 		return (NULL);
-	
+
 	buf = malloc((len_in + len_out) * SHA256_DIGEST_LENGTH);
 	if (!sha256((int8_t *)buf,
 		    (len_in + len_out) * SHA256_DIGEST_LENGTH, hash_buf))
