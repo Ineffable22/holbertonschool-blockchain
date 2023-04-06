@@ -4,10 +4,12 @@
  * validate_money - validate if the sender has enough money to send
  * @amount:      Amount to send
  * @all_unspent: List of all unspent transactions
+ * @pub_sender:  Public key of the sender
  *
  * Return: The amount of money the sender has
  */
-uint32_t validate_money(uint32_t amount, llist_t *all_unspent)
+uint32_t validate_money(uint32_t amount, llist_t *all_unspent,
+			uint8_t pub_sender[EC_PUB_LEN])
 {
 	unspent_tx_out_t *txo = NULL;
 	uint32_t i = 0, len = llist_size(all_unspent);
@@ -16,8 +18,9 @@ uint32_t validate_money(uint32_t amount, llist_t *all_unspent)
 	for (i = 0; i < len; i++)
 	{
 		txo = llist_get_node_at(all_unspent, i);
-		if (txo)
-			unspend += txo->out.amount;
+		if (!txo || memcmp(txo->out.pub, pub_sender, EC_PUB_LEN))
+			continue;
+		unspend += txo->out.amount;
 	}
 	if (unspend < amount)
 	{
@@ -30,19 +33,17 @@ uint32_t validate_money(uint32_t amount, llist_t *all_unspent)
 /**
  * create_utxos - create the transaction outputs
  * @amount:       Amount to send
- * @all_unspent:  List of all unspent transactions
  * @pub_sender:   Public key of the sender
  * @pub_receiver: Public key of the receiver
  * @tx:           Transaction to add the outputs
  * @unspend:      Amount of money the sender has
  * Return: The transaction with the outputs
  */
-transaction_t *create_utxos(uint32_t amount, llist_t *all_unspent,
+transaction_t *create_utxos(uint32_t amount,
 			    uint8_t pub_sender[EC_PUB_LEN], uint8_t pub_receiver[EC_PUB_LEN],
 			    transaction_t *tx, uint32_t unspend)
 {
 	tx_out_t *txo_receiver = NULL, *txo_sender = NULL;
-	(void)all_unspent;
 
 	if (unspend > amount)
 	{
@@ -55,7 +56,7 @@ transaction_t *create_utxos(uint32_t amount, llist_t *all_unspent,
 		return (NULL);
 
 	if (llist_add_node(tx->outputs, txo_receiver, ADD_NODE_REAR) ||
-	    llist_add_node(tx->outputs, txo_sender, ADD_NODE_REAR))
+	    (txo_sender && llist_add_node(tx->outputs, txo_sender, ADD_NODE_REAR)))
 		return (NULL);
 
 	return (tx);
@@ -136,7 +137,7 @@ transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
 		return (NULL);
 
 	/* Valitate if sender has enough money */
-	unspend = validate_money(amount, all_unspent);
+	unspend = validate_money(amount, all_unspent, pub_sender);
 	if (!unspend)
 		return (free(tx), NULL);
 
@@ -145,7 +146,7 @@ transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
 	if (!tx)
 		return (NULL);
 
-	/* Create transaction input */
+	/* Create transaction inputs outputs */
 	tx->inputs = llist_create(MT_SUPPORT_FALSE);
 	tx->outputs = llist_create(MT_SUPPORT_FALSE);
 	if (!tx->inputs || !tx->outputs)
@@ -155,7 +156,7 @@ transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
 	discount_money(all_unspent, amount, tx, pub_sender);
 
 	/* Create transaction output */
-	tx = create_utxos(amount, all_unspent, pub_sender, pub_receiver, tx, unspend);
+	tx = create_utxos(amount, pub_sender, pub_receiver, tx, unspend);
 	if (!tx)
 		return (NULL);
 	/* Sign transaction */
