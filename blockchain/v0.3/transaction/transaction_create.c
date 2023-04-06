@@ -105,7 +105,7 @@ int discount_money(llist_node_t all_unspent, uint32_t amount,
 	{
 		txo = llist_get_node_at(all_unspent, i);
 		if (!txo)
-			return (1);
+			return (0);
 		if (memcmp(txo->out.pub, pub_sender, EC_PUB_LEN))
 			continue;
 		amount -= txo->out.amount;
@@ -114,7 +114,7 @@ int discount_money(llist_node_t all_unspent, uint32_t amount,
 			return (0);
 		if (llist_add_node(tx->inputs, txi, ADD_NODE_REAR))
 			return (0);
-		if (txo->out.amount >= amount)
+		if (txo->out.amount > amount)
 			break;
 	}
 	return (1);
