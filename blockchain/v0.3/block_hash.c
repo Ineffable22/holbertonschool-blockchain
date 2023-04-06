@@ -36,7 +36,7 @@ uint8_t *block_hash(block_t const *block,
 		return (NULL);
 	memcpy(buf, &block->info, len);
 	buf += len;
-	llist_for_each(block->transactions, hash_id, hash_buf);
+	llist_for_each(block->transactions, hash_id, buf);
 	if (!sha256(_buf, lenall, hash_buf))
 		return (NULL);
 	free(_buf);
