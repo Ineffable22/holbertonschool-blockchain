@@ -17,7 +17,7 @@ transaction_t *coinbase_create(EC_KEY const *receiver, uint32_t block_index)
 	uint8_t pub[EC_PUB_LEN];
 
 	/* Check parameters */
-	if (!receiver || block_index < 1)
+	if (!receiver || block_index < 1 || !ec_to_pub(receiver, pub))
 		return (NULL);
 	tx = calloc(1, sizeof(transaction_t));
 	if (!tx)
@@ -39,7 +39,7 @@ transaction_t *coinbase_create(EC_KEY const *receiver, uint32_t block_index)
 		return (NULL);
 
 	/* Create coinbase transaction output */
-	tx_out = tx_out_create(COINBASE_AMOUNT, ec_to_pub(receiver, pub));
+	tx_out = tx_out_create(COINBASE_AMOUNT, pub);
 	if (!tx_out)
 		return (NULL);
 
