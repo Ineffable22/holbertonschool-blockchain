@@ -97,7 +97,7 @@ int sign_inputs(transaction_t *tx, EC_KEY const *sender, llist_t *all_unspent)
 int discount_money(llist_node_t all_unspent, uint32_t amount,
 		   transaction_t *tx, uint8_t pub_sender[EC_PUB_LEN])
 {
-	uint32_t i = 0, len = llist_size(all_unspent);
+	uint32_t i = 0, len = llist_size(all_unspent), unspent = 0;
 	unspent_tx_out_t *txo = NULL;
 	tx_in_t *txi = NULL;
 
@@ -108,13 +108,13 @@ int discount_money(llist_node_t all_unspent, uint32_t amount,
 			return (0);
 		if (memcmp(txo->out.pub, pub_sender, EC_PUB_LEN))
 			continue;
-		amount -= txo->out.amount;
+		unspent += txo->out.amount;
 		txi = tx_in_create(txo);
 		if (!txi)
 			return (0);
 		if (llist_add_node(tx->inputs, txi, ADD_NODE_REAR))
 			return (0);
-		if (txo->out.amount > amount)
+		if (unspent >= amount)
 			break;
 	}
 	return (1);
