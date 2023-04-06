@@ -63,5 +63,8 @@ blockchain_t *blockchain_create(void)
 	if (!blockchain)
 		return (free(block), free(chain), NULL);
 	blockchain->chain = chain;
+	blockchain->unspent = llist_create(MT_SUPPORT_FALSE);
+	if (!blockchain->unspent)
+		return (free(block), free(chain), free(blockchain), NULL);
 	return (blockchain);
 }
