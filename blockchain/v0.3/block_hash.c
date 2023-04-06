@@ -28,15 +28,16 @@ uint8_t *block_hash(block_t const *block,
 		    uint8_t hash_buf[SHA256_DIGEST_LENGTH])
 {
 	int8_t *buf = NULL, *_buf = NULL;
+	int32_t len = sizeof(block->info) + block->data.len;
+	int32_t lenall = len + llist_size(block->transactions) * SHA256_DIGEST_LENGTH;
 
-	buf = _buf = calloc(1, (sizeof(block->info) + block->data.len) +
-				   (llist_size(block->transactions) * SHA256_DIGEST_LENGTH));
+	buf = _buf = calloc(1, lenall);
 	if (!buf)
 		return (NULL);
-	memcpy(buf, &block->info, sizeof(block->info) + block->data.len);
-	buf += sizeof(block->info) + block->data.len;
+	memcpy(buf, &block->info, len);
+	buf += len;
 	llist_for_each(block->transactions, hash_id, hash_buf);
-	if (!sha256(_buf, sizeof(block->info) + block->data.len, hash_buf))
+	if (!sha256(_buf, lenall, hash_buf))
 		return (NULL);
 	free(_buf);
 	return (hash_buf);
