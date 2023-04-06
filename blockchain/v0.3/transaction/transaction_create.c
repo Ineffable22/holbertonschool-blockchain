@@ -67,19 +67,23 @@ transaction_t *create_utxos(uint32_t amount,
  * @tx:	         Transaction to sign
  * @sender:      Private key of the sender
  * @all_unspent: List of all unspent transactions
+ *
+ * Return: 0 on success, 1 on failure
  */
-void sign_inputs(transaction_t *tx, EC_KEY const *sender, llist_t *all_unspent)
+int sign_inputs(transaction_t *tx, EC_KEY const *sender, llist_t *all_unspent)
 {
 	tx_in_t *txi = NULL;
 	uint32_t i = 0, len = llist_size(tx->inputs);
 
-	transaction_hash(tx, tx->id);
+	if (!transaction_hash(tx, tx->id))
+		return (0);
 	for (i = 0; i < len; i++)
 	{
 		txi = llist_get_node_at(tx->inputs, i);
 		if (!tx_in_sign(txi, tx->id, sender, all_unspent))
-			exit(1);
+			return (0);
 	}
+	return (1);
 }
 
 /**
@@ -95,21 +99,25 @@ int discount_money(llist_node_t all_unspent, uint32_t amount,
 {
 	uint32_t i = 0, len = llist_size(all_unspent);
 	unspent_tx_out_t *txo = NULL;
+	tx_in_t *txi = NULL;
 
 	for (i = 0; i < len; i++)
 	{
 		txo = llist_get_node_at(all_unspent, i);
 		if (!txo)
-			return (0);
+			return (1);
 		if (memcmp(txo->out.pub, pub_sender, EC_PUB_LEN))
 			continue;
 		amount -= txo->out.amount;
-		if (llist_add_node(tx->inputs, tx_in_create(txo), ADD_NODE_REAR))
-			exit(1);
+		txi = tx_in_create(txo);
+		if (!txi)
+			return (0);
+		if (llist_add_node(tx->inputs, txi, ADD_NODE_REAR))
+			return (0);
 		if (txo->out.amount >= amount)
 			break;
 	}
-	return (0);
+	return (1);
 }
 
 /**
@@ -153,13 +161,15 @@ transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
 		return (free(tx), NULL);
 
 	/* Discount amount from sender */
-	discount_money(all_unspent, amount, tx, pub_sender);
+	if (!discount_money(all_unspent, amount, tx, pub_sender))
+		return (free(tx), NULL);
 
 	/* Create transaction output */
 	tx = create_utxos(amount, pub_sender, pub_receiver, tx, unspend);
 	if (!tx)
 		return (NULL);
 	/* Sign transaction */
-	sign_inputs(tx, sender, all_unspent);
+	if (!sign_inputs(tx, sender, all_unspent))
+		return (free(tx), NULL);
 	return (tx);
 }
