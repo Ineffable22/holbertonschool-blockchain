@@ -106,5 +106,6 @@ sig_t *tx_in_sign(tx_in_t *in, uint8_t const tx_id[SHA256_DIGEST_LENGTH],
 transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
 				  uint32_t amount, llist_t *all_unspent);
 int transaction_is_valid(transaction_t const *transaction, llist_t *all_unspent);
+transaction_t *coinbase_create(EC_KEY const *receiver, uint32_t block_index);
 
 #endif /* _TRANSACTION_H_ */
