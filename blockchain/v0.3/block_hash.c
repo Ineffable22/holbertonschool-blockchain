@@ -13,7 +13,7 @@ static int hash_id(llist_node_t node, unsigned int index, void *arg)
 	transaction_t *tx = node;
 	uint8_t *hash_buf = arg;
 
-	memcpy(&hash_buf[SHA256_DIGEST_LENGTH * index], tx->id, SHA256_DIGEST_LENGTH);
+	memcpy(&hash_buf[SHA256_DIGEST_LENGTH * index], &tx->id, SHA256_DIGEST_LENGTH);
 	return (0);
 }
 
@@ -28,10 +28,15 @@ uint8_t *block_hash(block_t const *block,
 		    uint8_t hash_buf[SHA256_DIGEST_LENGTH])
 {
 	int8_t *buf = NULL, *_buf = NULL;
-	int32_t len = sizeof(block->info) + block->data.len;
-	int32_t lenall = len + llist_size(block->transactions) * SHA256_DIGEST_LENGTH;
+	int32_t len = 0, lenall = 0;
 
-	buf = _buf = calloc(1, lenall);
+	if (!block || !hash_buf)
+		return (NULL);
+	len = sizeof(block->info) + block->data.len;
+	lenall = len;
+	if (llist_size(block->transactions) > 0)
+		lenall += llist_size(block->transactions) * SHA256_DIGEST_LENGTH;
+	buf = _buf = calloc(sizeof(int8_t), lenall);
 	if (!buf)
 		return (NULL);
 	memcpy(buf, &block->info, len);
