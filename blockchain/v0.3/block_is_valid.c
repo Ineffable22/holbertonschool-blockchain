@@ -33,7 +33,8 @@ static int check_tx(llist_node_t node, unsigned int index, void *arg)
  * @all_unspent: Points to the list of all unspent transaction outputs
  * Return: 0 if valid, or 1 otherwise
  */
-int block_is_valid(block_t const *block, block_t const *prev_block, llist_t *all_unspent)
+int block_is_valid(block_t const *block, block_t const *prev_block,
+		   llist_t *all_unspent)
 {
 	uint8_t hash_buf[SHA256_DIGEST_LENGTH] = {0};
 	block_t const _genesis = GENESIS;
