@@ -1,5 +1,15 @@
 #include "blockchain.h"
 
+/**
+ * check_tx - Checks if a transaction is valid
+ * @node:  Points to the transaction to check
+ * @index: Is the index of the transaction in the list
+ * @arg:   Points to a structure containing the list of all unspent
+ *         transaction outputs, and a flag indicating whether the
+ *         transaction is a coinbase transaction
+ *
+ * Return: 0 if valid, or 1 otherwise
+ */
 static int check_tx(llist_node_t node, unsigned int index, void *arg)
 {
 	transaction_t *tx = node;
