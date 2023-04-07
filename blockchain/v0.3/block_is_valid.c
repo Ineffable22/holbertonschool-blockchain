@@ -46,20 +46,14 @@ int block_is_valid(block_t const *block, block_t const *prev_block,
 		return (memcmp(block, &_genesis, sizeof(block_t)));
 	if (block->info.index != prev_block->info.index + 1)
 		return (1);
-	if (!block_hash(prev_block, hash_buf))
-		return (1);
-	if (memcmp(hash_buf, prev_block->hash, SHA256_DIGEST_LENGTH))
-		return (1);
-	if (memcmp(prev_block->hash, block->info.prev_hash, SHA256_DIGEST_LENGTH))
-		return (1);
-	if (!block_hash(block, hash_buf) ||
-	    memcmp(hash_buf, block->hash, SHA256_DIGEST_LENGTH))
-		return (1);
-	if (block->data.len > BLOCKCHAIN_DATA_MAX)
-		return (1);
-	if (!hash_matches_difficulty(block->hash, block->info.difficulty))
-		return (1);
-	if (llist_size(block->transactions) < 1)
+	if (!block_hash(prev_block, hash_buf) ||
+	    memcmp(hash_buf, prev_block->hash, SHA256_DIGEST_LENGTH) ||
+	    memcmp(prev_block->hash, block->info.prev_hash, SHA256_DIGEST_LENGTH) ||
+	    !block_hash(block, hash_buf) ||
+	    memcmp(hash_buf, block->hash, SHA256_DIGEST_LENGTH) ||
+	    block->data.len > BLOCKCHAIN_DATA_MAX ||
+	    !hash_matches_difficulty(block->hash, block->info.difficulty) ||
+	    llist_size(block->transactions) < 1)
 		return (1);
 	info.all_unspent = all_unspent;
 	info.bool = block->info.index;
