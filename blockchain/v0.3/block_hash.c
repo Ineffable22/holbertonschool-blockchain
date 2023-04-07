@@ -13,7 +13,8 @@ static int hash_id(llist_node_t node, unsigned int index, void *arg)
 	transaction_t *tx = node;
 	uint8_t *hash_buf = arg;
 
-	memcpy(&hash_buf[SHA256_DIGEST_LENGTH * index], &tx->id, SHA256_DIGEST_LENGTH);
+	memcpy(&hash_buf[SHA256_DIGEST_LENGTH * index], &tx->id,
+	       SHA256_DIGEST_LENGTH);
 	return (0);
 }
 
