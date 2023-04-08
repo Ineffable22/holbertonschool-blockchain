@@ -115,7 +115,7 @@ llist_t *update_unspent(llist_t *transactions,
 		return (NULL);
 	memcpy(&(data.block_hash), block_hash, SHA256_DIGEST_LENGTH);
 	data.all_unspent = all_unspent;
-	if (llist_for_each(transactions, (node_func_t)check_tx, &data))
+	if (llist_for_each(transactions, (node_func_t)list_tx, &data))
 		return (NULL);
 	return (all_unspent);
 }
