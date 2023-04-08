@@ -94,6 +94,13 @@ typedef struct tx_info_s
 
 } tx_info_t;
 
+typedef struct check_block_s
+{
+	uint8_t block_hash[SHA256_DIGEST_LENGTH];
+	llist_t *all_unspent;
+	uint8_t tx_id[SHA256_DIGEST_LENGTH];
+} check_block_t;
+
 tx_out_t *tx_out_create(uint32_t amount, uint8_t const pub[EC_PUB_LEN]);
 unspent_tx_out_t *unspent_tx_out_create(
     uint8_t block_hash[SHA256_DIGEST_LENGTH],
@@ -109,5 +116,7 @@ int transaction_is_valid(transaction_t const *transaction, llist_t *all_unspent)
 transaction_t *coinbase_create(EC_KEY const *receiver, uint32_t block_index);
 int coinbase_is_valid(transaction_t const *coinbase, uint32_t block_index);
 void transaction_destroy(transaction_t *transaction);
+llist_t *update_unspent(llist_t *transactions,
+			uint8_t block_hash[SHA256_DIGEST_LENGTH], llist_t *all_unspent);
 
 #endif /* _TRANSACTION_H_ */
