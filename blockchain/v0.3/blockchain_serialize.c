@@ -8,16 +8,16 @@
  *
  * Return: 0 on success, 1 on failure
  */
-int write_list_utx_out(unspent_tx_out_t *utxo, unsigned int index, int *fd);
+int write_list_utx_out(unspent_tx_out_t *utxo, unsigned int index, int *fd)
 {
 	(void)index;
-	if (!utx_out || !fd)
+	if (!utxo || !fd)
 		return (1);
-	if (write(*fd, &(utx_out->block_hash), SHA256_DIGEST_LENGTH) == -1 ||
-	    write(*fd, &(utx_out->tx_id), SHA256_DIGEST_LENGTH) == -1 ||
-	    write(*fd, &(utx_out->out.amount), sizeof(uint32_t)) == -1 ||
-	    write(*fd, &(utx_out->out.pub), EC_PUB_LEN) == -1 ||
-	    write(*fd, &(utx_out->out.hash), SHA256_DIGEST_LENGTH) == -1)
+	if (write(*fd, &(utxo->block_hash), SHA256_DIGEST_LENGTH) == -1 ||
+	    write(*fd, &(utxo->tx_id), SHA256_DIGEST_LENGTH) == -1 ||
+	    write(*fd, &(utxo->out.amount), sizeof(uint32_t)) == -1 ||
+	    write(*fd, &(utxo->out.pub), EC_PUB_LEN) == -1 ||
+	    write(*fd, &(utxo->out.hash), SHA256_DIGEST_LENGTH) == -1)
 		return (1);
 	return (0);
 }
@@ -76,6 +76,7 @@ int write_list_tx(transaction_t *tx, unsigned int index, int *fd)
 {
 	uint32_t len_tx_in = 0, len_tx_out = 0;
 
+	printf("BB\n");
 	(void)index;
 	if (!tx || !fd)
 		return (1);
@@ -84,8 +85,8 @@ int write_list_tx(transaction_t *tx, unsigned int index, int *fd)
 	if (write(*fd, &len_tx_in, 4) == -1 ||
 	    write(*fd, &len_tx_out, 4) == -1)
 		return (1);
-	if (llist_for_each(tx->inputs, write_list_tx_in, fd) == -1 ||
-	    llist_for_each(tx->outputs, write_list_tx_out, fd) == -1)
+	if (llist_for_each(tx->inputs, (node_func_t)write_list_tx_in, fd) == -1 ||
+	    llist_for_each(tx->outputs, (node_func_t)write_list_tx_out, fd) == -1)
 		return (1);
 	return (0);
 }
@@ -104,7 +105,7 @@ int blockchain_serialize(blockchain_t const *blockchain, char const *path)
 	char *hblk_magic = "\x48\x42\x4c\x4b";
 	char *hblk_version = "\x30\x2E\x31";
 	uint8_t hblk_endian = _get_endianness();
-	uint32_t hblk_blocks = 0, index = 0, len_utxo = 0;
+	int32_t hblk_blocks = 0, index = 0, len_utxo = 0;
 	int fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR);
 
 	if (!blockchain || !path || fd == -1)
@@ -126,11 +127,12 @@ int blockchain_serialize(blockchain_t const *blockchain, char const *path)
 		    write(fd, &(block->data.len), sizeof(uint32_t)) == -1 ||
 		    write(fd, block->data.buffer, block->data.len) == -1 ||
 		    write(fd, block->hash, SHA256_DIGEST_LENGTH) == -1 ||
-		    write(fd, &len_utxo, 4) == -1 ||
-		    llist_for_each(block->transactions, write_list_tx, &fd))
+		    write(fd, &len_utxo, 4) == -1)
+		    			return (close(fd), -1);
+		if (len_utxo > 0 && llist_for_each(block->transactions, (node_func_t)write_list_tx, &fd))
 			return (close(fd), -1);
 	}
-	if (llist_for_each(blockchain->unspent, write_list_utx_out, &fd))
+	if (llist_for_each(blockchain->unspent, (node_func_t)write_list_utx_out, &fd))
 		return (close(fd), -1);
 	close(fd);
 	return (0);
