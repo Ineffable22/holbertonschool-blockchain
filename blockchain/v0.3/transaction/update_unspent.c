@@ -67,7 +67,7 @@ static int list_input_to_del(tx_in_t *input, unsigned int index,
 	/* coinbase tx inputs by definition have no referenced outputs */
 	if (hashes_zeroed)
 		return (0);
-	if (llist_remove_node(unspent, (node_ident_t)tx_is_valid, input, 1, NULL))
+	if (llist_remove_node(unspent, (node_ident_t)tx_is_valid, input, 1, free))
 		return (1);
 	return (0);
 }
