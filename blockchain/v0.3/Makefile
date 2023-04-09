@@ -7,6 +7,9 @@ BETTY = betty
 ALLSRC = $(wildcard *.c) $(wildcard transaction/*.c) $(wildcard provided/*.c)
 ALLOBJ = $(patsubst %.c, obj/%.o, $(ALLSRC))
 
+ALLSRCLIB = $(wildcard *.c) $(wildcard transaction/*.c)
+ALLOBJLIB = $(patsubst %.c, obj/%.o, $(ALLSRCLIB))
+
 SRC0 = test/blockchain_create-main.c $(ALLSRC)
 OBJ0 = $(patsubst %.c, obj/%.o, $(SRC0))
 NAME0 = bin/blockchain_create-test
@@ -110,7 +113,7 @@ NAME24 = bin/transaction/update_unspent-test
 ALLNAME = $(NAME0) $(NAME1) $(NAME2) $(NAME3) $(NAME4) $(NAME5) $(NAME6) $(NAME7) $(NAME8) $(NAME9) $(NAME10) $(NAME11) $(NAME12) $(NAME13) $(NAME14) $(NAME15) $(NAME16) $(NAME17) $(NAME18) $(NAME19) $(NAME20) $(NAME21) $(NAME22) $(NAME23) $(NAME24)
 LIBNAME = libhblk_blockchain.a
 
-.PHONY: directories all clean fclean re task0 task1 task2 task3 task4 task5 task6 task7 task8 task9 task10 task11 task12 task13 task14 task15 task16 task17 task18 task19 task20 task21 task22 task23 task24
+.PHONY: directories all clean fclean re task0 task1 task2 task3 task4 task5 task6 task7 task8 task9 task10 task11 task12 task13 task14 task15 task16 task17 task18 task19 task20 task21 task22 task23 task24 libhblk_blockchain.a
 
 all: directories task0 task1 task2 task3 task4 task5 task6 task7 task8 task9 task10 task11 task12 task13 task14 task15 task16 task17 task18 task19 task20 task21 task22 task23 task24
 
@@ -227,12 +230,12 @@ task24: directories $(HEADER) $(OBJ24)
 	$(CC) $(CFLAGS) $(OBJ24) -o $(NAME24) $(LIB)
 	./$(NAME24)
 
-libhblk_blockchain.a: $(HEADER) $(ALLOBJ)
-	ar rcs $(LIBNAME) $(ALLOBJ)
+libhblk_blockchain.a: $(HEADER) $(ALLOBJLIB)
+	ar rcs $(LIBNAME) $(ALLOBJLIB)
 
 clean:
 	$(foreach var, $(ALLNAME), $(RM) *~ $(var))
-	$(RM) save.hblk
+	$(RM) save.hblk $(LIBNAME)
 
 oclean:
 	$(foreach var, $(ALLOBJ), $(RM) $(var))
