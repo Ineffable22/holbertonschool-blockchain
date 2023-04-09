@@ -22,16 +22,19 @@ static void _print_hex_buffer(uint8_t const *buf, size_t len)
 }
 
 static block_t *_add_block(blockchain_t *blockchain, block_t const *prev,
-			   char const *s)
+			   char const *s, EC_KEY *miner)
 {
 	block_t *block;
+	transaction_t *coinbase;
 
 	block = block_create(prev, (int8_t *)s, (uint32_t)strlen(s));
 	block->info.difficulty = 20;
 
+	coinbase = coinbase_create(miner, block->info.index);
+	llist_add_node(block->transactions, coinbase, ADD_NODE_FRONT);
 	block_mine(block);
 
-	if (block_is_valid(block, prev) == 0)
+	if (block_is_valid(block, prev, blockchain->unspent) == 0)
 	{
 		printf("Block mined: [%u] ", block->info.difficulty);
 		_print_hex_buffer(block->hash, SHA256_DIGEST_LENGTH);
@@ -56,24 +59,27 @@ int main(void)
 {
 	blockchain_t *blockchain;
 	block_t *block;
+	EC_KEY *miner;
+	miner = ec_create();
 
 	blockchain = blockchain_create();
 	block = llist_get_head(blockchain->chain);
-	block = _add_block(blockchain, block, "Holberton");
-	block = _add_block(blockchain, block, "School");
-	block = _add_block(blockchain, block, "of");
-	block = _add_block(blockchain, block, "Software");
-	block = _add_block(blockchain, block, "Engineering");
-	block = _add_block(blockchain, block, "972");
-	block = _add_block(blockchain, block, "Mission");
-	block = _add_block(blockchain, block, "Street");
-	block = _add_block(blockchain, block, "San Francisco");
-	block = _add_block(blockchain, block, "CA");
-	block = _add_block(blockchain, block, "\\o/");
+	block = _add_block(blockchain, block, "Holberton", miner);
+	block = _add_block(blockchain, block, "School", miner);
+	block = _add_block(blockchain, block, "of", miner);
+	block = _add_block(blockchain, block, "Software", miner);
+	block = _add_block(blockchain, block, "Engineering", miner);
+	block = _add_block(blockchain, block, "972", miner);
+	block = _add_block(blockchain, block, "Mission", miner);
+	block = _add_block(blockchain, block, "Street", miner);
+	block = _add_block(blockchain, block, "San Francisco", miner);
+	block = _add_block(blockchain, block, "CA", miner);
+	block = _add_block(blockchain, block, "\\o/", miner);
 
 	_blockchain_print_brief(blockchain);
 
 	blockchain_destroy(blockchain);
+	EC_KEY_free(miner);
 
 	return (EXIT_SUCCESS);
 }
