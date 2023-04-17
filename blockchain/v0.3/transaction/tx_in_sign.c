@@ -33,7 +33,7 @@ static int tx_is_valid(unspent_tx_out_t *utxo, tx_in_t *tx_in)
  * Return: A pointer to the resulting signature structure upon success,
  *         or NULL upon failure
  */
-sig_t *tx_in_sign(tx_in_t *in, uint8_t const tx_id[SHA256_DIGEST_LENGTH],
+signature_t *tx_in_sign(tx_in_t *in, uint8_t const tx_id[SHA256_DIGEST_LENGTH],
 		  EC_KEY const *sender, llist_t *all_unspent)
 {
 	uint8_t sender_pub[EC_PUB_LEN];

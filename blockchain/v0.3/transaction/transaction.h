@@ -1,7 +1,7 @@
 #ifndef _TRANSACTION_H_
 #define _TRANSACTION_H_
 
-#include "blockchain.h"
+#include "../../../crypto/hblk_crypto.h"
 #include <llist.h>
 
 #define COINBASE_AMOUNT 50
@@ -54,7 +54,7 @@ typedef struct tx_in_s
 	uint8_t block_hash[SHA256_DIGEST_LENGTH];
 	uint8_t tx_id[SHA256_DIGEST_LENGTH];
 	uint8_t tx_out_hash[SHA256_DIGEST_LENGTH];
-	sig_t sig;
+	signature_t sig;
 } tx_in_t;
 
 /**
@@ -108,7 +108,7 @@ unspent_tx_out_t *unspent_tx_out_create(
 tx_in_t *tx_in_create(unspent_tx_out_t const *unspent);
 uint8_t *transaction_hash(transaction_t const *transaction,
 			  uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
-sig_t *tx_in_sign(tx_in_t *in, uint8_t const tx_id[SHA256_DIGEST_LENGTH],
+signature_t *tx_in_sign(tx_in_t *in, uint8_t const tx_id[SHA256_DIGEST_LENGTH],
 		  EC_KEY const *sender, llist_t *all_unspent);
 transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
 				  uint32_t amount, llist_t *all_unspent);
