@@ -12,7 +12,7 @@
  * If either key, msg or sig is NULL, your function must fail
  */
 int ec_verify(EC_KEY const *key, uint8_t const *msg, size_t msglen,
-	      sig_t const *sig)
+	      signature_t const *sig)
 {
 	if (!key || !msg || !sig)
 		return (0);

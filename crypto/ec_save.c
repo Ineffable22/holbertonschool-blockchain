@@ -14,8 +14,7 @@ int ec_save(EC_KEY *key, char const *folder)
 
 	if (!key || !folder)
 		return (0);
-	if (mkdir(folder, S_IRWXU | S_IRWXG | S_IRWXO))
-		return (0);
+	mkdir(folder, S_IRWXU | S_IRWXG | S_IRWXO);
 	sprintf(path, "%s/%s", folder, PRI_FILENAME);
 	fp = fopen(path, "w");
 	if (!fp)

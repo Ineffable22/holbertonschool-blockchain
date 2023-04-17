@@ -16,7 +16,7 @@ void _print_hex_buffer(uint8_t const *buf, size_t len);
 static int test_ec_sign(EC_KEY const *key)
 {
 	uint8_t const str[] = "Holberton";
-	sig_t sig;
+	signature_t sig;
 
 	if (!ec_sign(key, str, strlen((char *)str), &sig))
 	{
