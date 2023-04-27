@@ -14,6 +14,11 @@ int main(void)
 
 	signal(SIGINT, response_signal);
 	start_blockchain(&session);
+	if (session.state.msg)
+	{
+		fprintf(stdout, "%s\n", session.state.msg);
+		session.state.msg = NULL;
+	}
 	while (i != EOF)
 	{
 		if (isatty(STDIN_FILENO))
@@ -29,6 +34,9 @@ int main(void)
 		if (session.state.code != 0)
 			break;
 	}
+	blockchain_destroy(session.blockchain);
+	llist_destroy(session.tx_pool, 0, free);
+	free(session.wallet);
 	free(buffer);
 	return (session.state.code > 0 ? session.state.code : 0);
 }
@@ -89,17 +97,17 @@ void search_cmd(char **arg, session_t *session)
 {
 	int32_t i = 0;
 	cmd_t cmd[] = {
-		{"wallet_load", load},
-		{"wallet_save", save},
-		{"current", current},
-		{"send", send},
-		{"mine", mine},
-		{"info", info},
-		{"load", deserialize},
-		{"save", serialize},
-		{"help", help},
-		{"exit", exit_cli},
-		{NULL, NULL},
+	    {"wallet_load", load},
+	    {"wallet_save", save},
+	    {"current", current},
+	    {"send", send},
+	    {"mine", mine},
+	    {"info", info},
+	    {"load", deserialize},
+	    {"save", serialize},
+	    {"help", help},
+	    {"exit", exit_cli},
+	    {NULL, NULL},
 	};
 
 	while (cmd[i].cmd != NULL)
