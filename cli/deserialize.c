@@ -62,6 +62,7 @@ void deserialize(char **arg, session_t *session)
 void start_blockchain(session_t *session)
 {
 	wallet_t *wallet;
+	char *username = "Ineffable";
 
 	session->blockchain = blockchain_deserialize("save.hlbk");
 	if (session->blockchain == NULL)
@@ -74,11 +75,14 @@ void start_blockchain(session_t *session)
 		session->state.msg = "Error: failed to allocate memory for wallet";
 		return;
 	}
-	wallet->key = ec_load("miguel");
+	wallet->key = ec_load(username);
 	if (wallet->key == NULL)
 	{
-		session->state.code = 1;
-		session->state.msg = "Error: failed to load Miguel's key";
+		char *args[2] = {"save", username};
+		save(args, session);
+		session->state.code = 0;
+		session->state.msg = "Error: failed to load Ineffable's key\n"
+				     "Correction: Ineffable's Key created successfully";
 		return;
 	}
 	if (!ec_to_pub(wallet->key, wallet->pub))
