@@ -62,7 +62,11 @@ void save(char **arg, session_t *session)
 	}
 	printf("Public key: ");
 	_print_hex_buffer(pub, EC_PUB_LEN);
-	printf("saved in %s directory\n", arg[1]);
+	printf("\nSaved in %s directory\n", arg[1]);
 	session->state.code = 0;
 	session->state.msg = "state: save";
+	if (!session->wallet)
+		session->wallet = calloc(1, sizeof(wallet_t));
+	memcpy(session->wallet->pub, pub, EC_PUB_LEN);
+	session->wallet->key = key;
 }
