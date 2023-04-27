@@ -8,7 +8,7 @@ HDR_BLOCK = ../blockchain/$(VERSION)/
 HDR_TRANSACTION = ../blockchain/$(VERSION)/transaction/
 HDR_PROVIDED = ../blockchain/$(VERSION)/provided/
 
-LINKLIBS = hblk_blockchain hblk_crypto llist ssl crypto
+LINKLIBS = hblk_blockchain hblk_crypto llist ssl crypto readline
 MULTITHREAD = -pthread
 LDLIBS = $(addprefix -l, $(LINKLIBS)) $(MULTITHREAD)
 
