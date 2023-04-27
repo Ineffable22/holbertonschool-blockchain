@@ -4,6 +4,8 @@
 #include <signal.h>
 #include "../blockchain/v0.3/blockchain.h"
 #include "../blockchain/v0.3/provided/endianness.h"
+#include <readline/readline.h>
+#include <readline/history.h>
 
 #define SC(session, num, message) \
 	(session->state.code = num, session->state.msg = message)
