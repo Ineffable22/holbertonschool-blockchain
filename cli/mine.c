@@ -66,7 +66,7 @@ void mine(char **arg, session_t *session)
 {
 	block_t *block;
 	EC_KEY *miner;
-	transaction_t *coin_tx;
+	transaction_t *coin_tx = NULL;
 	tx_out_t *tx_out;
 	unspent_tx_out_t *utx;
 
@@ -80,8 +80,16 @@ void mine(char **arg, session_t *session)
 		return;
 	}
 	new_block(session, &block, &miner, &coin_tx);
+	if (!coin_tx)
+		return;
 	session->blockchain->unspent = update_unspent(session->tx_pool,
 						      block->hash, session->blockchain->unspent);
+	if (!session->blockchain->unspent)
+	{
+		session->state.code = 0;
+		session->state.msg = "Error: failed to create miner";
+		return;
+	}
 	llist_destroy(session->tx_pool, 1, (node_dtor_t)transaction_destroy);
 	session->tx_pool = llist_create(MT_SUPPORT_TRUE);
 	tx_out = llist_get_head(coin_tx->outputs);
@@ -126,8 +134,8 @@ block_t *new_block(session_t *session, block_t **block, EC_KEY **miner,
 
 	if (_add_block(*block, session))
 	{
-		session->state.code = 1;
-		session->state.msg = "Error: failed to add block";
+		session->state.code = 0;
+		session->state.msg = "Error: Empty pool for session data";
 		return (NULL);
 	}
 	(*block)->info.difficulty = blockchain_difficulty(session->blockchain);
