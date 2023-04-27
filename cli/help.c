@@ -18,6 +18,14 @@ void help(char **arg, session_t *session)
 	session->state.code = 0;
 	session->state.msg = "state: help";
 	printf("Usage: \n");
-	printf("wallet_load [file] \n");
-	printf("wallet_save [file] \n");
+	printf("\twallet_load <file_name>\n");
+	printf("\twallet_save <file_name>\n");
+	printf("\tcurrent\n");
+	printf("\tsend <amount> <address>\n");
+	printf("\tmine\n");
+	printf("\tinfo\n");
+	printf("\tload <path>\n");
+	printf("\tsave <path>\n");
+	printf("\thelp\n");
+	printf("\texit\n");
 }
