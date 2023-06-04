@@ -56,7 +56,7 @@ obj/%.o: %.c
 # Task 0-8
 task0: directories $(HEADER) $(OBJ0)
 	$(CC) $(CFLAGS) $(OBJ0) -o $(NAME0) $(LIB)
-	./$(NAME0) "Holberton School"
+	valgrind ./$(NAME0) "Holberton School"
 
 task1: directories $(OBJ1)
 	$(CC) $(CFLAGS) $(OBJ1) -o $(NAME1) $(LIB)
@@ -72,7 +72,7 @@ task3: directories $(HEADER) $(OBJ3)
 
 task4: directories $(HEADER) $(OBJ4)
 	$(CC) $(CFLAGS) $(OBJ4) -o $(NAME4) $(LIB)
-	./$(NAME4) miguel
+	valgrind ./$(NAME4) miguel
 	ls -l miguel
 	openssl ec -text -noout -in miguel/key.pem
 	cat miguel/key.pem
@@ -81,16 +81,16 @@ task4: directories $(HEADER) $(OBJ4)
 
 task5: directories $(HEADER) $(OBJ5)
 	$(CC) $(CFLAGS) $(OBJ5) -o $(NAME5) $(LIB)
-	./$(NAME5) miguel
+	valgrind ./$(NAME5) miguel
 	rm -rf miguel
 
 task6: directories $(HEADER) $(OBJ6)
 	$(CC) $(CFLAGS) $(OBJ6) -o $(NAME6) $(LIB)
-	./$(NAME6)
+	valgrind ./$(NAME6)
 
 task7: directories $(HEADER) $(OBJ7)
 	$(CC) $(CFLAGS) $(OBJ7) -o $(NAME7) $(LIB)
-	./$(NAME7)
+	valgrind ./$(NAME7)
 
 # Task 8
 libhblk_crypto.a: $(STATICLIBOBJS)
