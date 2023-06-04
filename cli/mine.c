@@ -47,7 +47,7 @@ static int check_args(char **arg, session_t *session)
 int _add_block(block_t *block, session_t *session)
 {
 	while (!llist_remove_node(session->tx_pool,
-				  invalid_tx, session->blockchain->unspent,
+				  (node_ident_t)invalid_tx, session->blockchain->unspent,
 				  1, (node_dtor_t)transaction_destroy))
 		fprintf(stderr, "Error: invalid tx destroyed.\n");
 	if (llist_for_each(session->tx_pool, add_tx, block))
@@ -81,7 +81,10 @@ void mine(char **arg, session_t *session)
 	}
 	new_block(session, &block, &miner, &coin_tx);
 	if (!coin_tx)
+	{
+		EC_KEY_free(miner);
 		return;
+	}
 	session->blockchain->unspent = update_unspent(session->tx_pool,
 						      block->hash, session->blockchain->unspent);
 	if (!session->blockchain->unspent)
