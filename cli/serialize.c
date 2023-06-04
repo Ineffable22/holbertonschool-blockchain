@@ -12,13 +12,6 @@ int check(char **arg, session_t *session)
 	if (arg[1] != NULL)
 	{
 		session->state.code = 0;
-		session->state.msg = "Error: Path is NULL\n"
-				     "Usage: save <path>\n";
-		return (0);
-	}
-	if (arg[2] != NULL)
-	{
-		session->state.code = 0;
 		session->state.msg = "Error: too many arguments\n"
 				     "Usage: save <path>\n";
 		return (0);
@@ -55,7 +48,7 @@ void serialize(char **arg, session_t *session)
 {
 	if (check(arg, session) == 0)
 		return;
-	if (blockchain_serialize(session->blockchain, arg[1]))
+	if (blockchain_serialize(session->blockchain, BACKUP))
 	{
 		session->state.code = 0;
 		session->state.msg = "Error: Failed to save blockchain";
