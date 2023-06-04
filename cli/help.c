@@ -24,8 +24,8 @@ void help(char **arg, session_t *session)
 	printf("\tsend <amount> <address>\n");
 	printf("\tmine\n");
 	printf("\tinfo\n");
-	printf("\tload <path>\n");
-	printf("\tsave <path>\n");
+	printf("\tload\n");
+	printf("\tsave\n");
 	printf("\thelp\n");
 	printf("\texit\n");
 }
