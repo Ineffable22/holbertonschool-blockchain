@@ -57,9 +57,7 @@ fclean: clean oclean
 	$(MAKE) -C ../crypto fclean
 	$(MAKE) -C ../blockchain/$(VERSION) fclean
 
-
-
-re: oclean all
+re: fclean cli
 
 betty:
 	$(BETTY) *.c **/**.c *.h Makefile
