@@ -15,7 +15,7 @@ EC_KEY *ec_load(char const *folder)
 
 	if (!folder)
 		return (NULL);
-	sprintf(path, "%s/%s", folder, PUB_FILENAME);
+	sprintf(path, "keys/%s/%s", folder, PUB_FILENAME);
 	fp = fopen(path, "r");
 	if (!fp)
 		return (NULL);
@@ -24,7 +24,7 @@ EC_KEY *ec_load(char const *folder)
 		return (NULL);
 	fclose(fp);
 
-	sprintf(path, "%s/%s", folder, PRI_FILENAME);
+	sprintf(path, "keys/%s/%s", folder, PRI_FILENAME);
 	fp = fopen(path, "r");
 	if (!fp)
 		return (NULL);
