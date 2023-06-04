@@ -134,7 +134,7 @@ transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
 				  uint32_t amount, llist_t *all_unspent)
 {
 	transaction_t *tx = NULL;
-	uint8_t pub_sender[EC_PUB_LEN] = {0}, pub_receiver[EC_PUB_LEN] = {0};
+	uint8_t pub_sender[EC_PUB_LEN], pub_receiver[EC_PUB_LEN];
 	uint32_t unspend = 0;
 
 	/* Check parameters */

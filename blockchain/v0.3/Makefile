@@ -131,7 +131,7 @@ task0: directories $(HEADER) $(OBJ0)
 
 task1: directories $(OBJ1)
 	$(CC) $(CFLAGS) $(OBJ1) -o $(NAME1) $(LIB)
-	./$(NAME1)
+	valgrind ./$(NAME1)
 
 task2: directories $(HEADER) $(OBJ2)
 	$(CC) $(CFLAGS) $(OBJ2) -o $(NAME2) $(LIB)
@@ -143,76 +143,76 @@ task3: directories $(HEADER) $(OBJ3)
 
 task4: directories $(HEADER) $(OBJ4)
 	$(CC) $(CFLAGS) $(OBJ4) -o $(NAME4) $(LIB)
-	./$(NAME4)
+	valgrind ./$(NAME4)
 
 task5: directories $(HEADER) $(OBJ5)
 	$(CC) $(CFLAGS) $(OBJ5) -o $(NAME5) $(LIB)
-	./$(NAME5)
+	valgrind ./$(NAME5)
 	hexdump -Cv save.hblk
 
 task6: directories $(HEADER) $(OBJ6)
 	$(CC) $(CFLAGS) $(OBJ6) -o $(NAME6) $(LIB)
-	./$(NAME6)
+	valgrind ./$(NAME6)
 
 task7: directories $(HEADER) $(OBJ7)
 	$(CC) $(CFLAGS) $(OBJ7) -o $(NAME7) $(LIB)
-	./$(NAME7)
+	valgrind ./$(NAME7)
 
 # V0.2
 # Task 8-11
 task8: directories $(HEADER) $(OBJ8)
 	$(CC) $(CFLAGS) $(OBJ8) -o $(NAME8) $(LIB)
-	./$(NAME8)
+	valgrind ./$(NAME8)
 
 task9: directories $(HEADER) $(OBJ9)
 	$(CC) $(CFLAGS) $(OBJ9) -o $(NAME9) $(LIB)
-	./$(NAME9)
+	valgrind ./$(NAME9)
 
 task10: directories $(HEADER) $(OBJ10)
 	$(CC) $(CFLAGS) $(OBJ10) -o $(NAME10) $(LIB)
-	./$(NAME10)
+	valgrind ./$(NAME10)
 
 task11: directories $(HEADER) $(OBJ11)
 	$(CC) $(CFLAGS) $(OBJ11) -o $(NAME11) $(LIB)
-	./$(NAME11)
+	valgrind ./$(NAME11)
 
 # V0.3
 # Task 12-24
 task12: directories $(HEADER) $(OBJ12)
 	$(CC) $(CFLAGS) $(OBJ12) -o $(NAME12) $(LIB)
-	./$(NAME12)
+	valgrind ./$(NAME12)
 
 task13: directories $(HEADER) $(OBJ13)
 	$(CC) $(CFLAGS) $(OBJ13) -o $(NAME13) $(LIB)
-	./$(NAME13)
+	valgrind ./$(NAME13)
 
 task14: directories $(HEADER) $(OBJ14)
 	$(CC) $(CFLAGS) $(OBJ14) -o $(NAME14) $(LIB)
-	./$(NAME14)
+	valgrind ./$(NAME14)
 
 task15: directories $(HEADER) $(OBJ15)
 	$(CC) $(CFLAGS) $(OBJ15) -o $(NAME15) $(LIB)
-	./$(NAME15)
+	valgrind ./$(NAME15)
 
 task16: directories $(HEADER) $(OBJ16)
 	$(CC) $(CFLAGS) $(OBJ16) -o $(NAME16) $(LIB)
-	./$(NAME16)
+	valgrind -s --leak-check=full ./$(NAME16)
 
 task17: directories $(HEADER) $(OBJ17)
 	$(CC) $(CFLAGS) $(OBJ17) -o $(NAME17) $(LIB)
-	./$(NAME17)
+	valgrind ./$(NAME17)
 
 task18: directories $(HEADER) $(OBJ18)
 	$(CC) $(CFLAGS) $(OBJ18) -o $(NAME18) $(LIB)
-	./$(NAME18)
+	valgrind ./$(NAME18)
 
 task19: directories $(HEADER) $(OBJ19)
 	$(CC) $(CFLAGS) $(OBJ19) -o $(NAME19) $(LIB)
-	./$(NAME19)
+	valgrind ./$(NAME19)
 
 task20: directories $(HEADER) $(OBJ20)
 	$(CC) $(CFLAGS) $(OBJ20) -o $(NAME20) $(LIB)
-	./$(NAME20)
+	valgrind ./$(NAME20)
 
 task21: directories $(HEADER) $(OBJ21)
 	$(CC) $(CFLAGS) $(OBJ21) -o $(NAME21) $(LIB)
@@ -220,15 +220,15 @@ task21: directories $(HEADER) $(OBJ21)
 
 task22: directories $(HEADER) $(OBJ22)
 	$(CC) $(CFLAGS) $(OBJ22) -o $(NAME22) $(LIB)
-	./$(NAME22)
+	valgrind ./$(NAME22)
 
 task23: directories $(HEADER) $(OBJ23)
 	$(CC) $(CFLAGS) $(OBJ23) -o $(NAME23) $(LIB)
-	./$(NAME23)
+	valgrind ./$(NAME23)
 
 task24: directories $(HEADER) $(OBJ24)
 	$(CC) $(CFLAGS) $(OBJ24) -o $(NAME24) $(LIB)
-	./$(NAME24)
+	valgrind ./$(NAME24)
 
 libhblk_blockchain.a: $(HEADER) $(ALLOBJLIB)
 	ar rcs $(LIBNAME) $(ALLOBJLIB)

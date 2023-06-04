@@ -67,8 +67,16 @@ int main(void)
 
 	/* Cleanup */
 	EC_KEY_free(owner);
+	// free(out2);
+	if (transaction.outputs)
+		llist_destroy(transaction.outputs, 1, NULL);
+	if (transaction.inputs)
+		llist_destroy(transaction.inputs, 0, NULL);
+	llist_destroy(all_unspent, 0, NULL);
+	free(unspent);
 	free(out);
-	llist_destroy(all_unspent, 1, free);
 	free(in);
+	
+
 	return (EXIT_SUCCESS);
 }

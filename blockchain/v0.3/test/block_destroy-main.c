@@ -25,7 +25,7 @@ int main(void)
 	block_destroy(block1);
 	block_destroy(block2);
 
-	_blockchain_destroy(blockchain);
+	blockchain_destroy(blockchain);
 
 	return (EXIT_SUCCESS);
 }

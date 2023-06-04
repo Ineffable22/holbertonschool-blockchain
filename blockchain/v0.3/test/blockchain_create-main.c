@@ -27,13 +27,13 @@ int main(void)
 		   llist_get_head(blockchain2->chain), sizeof(block_t)) != 0)
 	{
 		fprintf(stderr, "Genesis Block should always be the same\n");
-		_blockchain_destroy(blockchain);
-		_blockchain_destroy(blockchain2);
+		blockchain_destroy(blockchain);
+		blockchain_destroy(blockchain2);
 		return (EXIT_FAILURE);
 	}
 
-	_blockchain_destroy(blockchain);
-	_blockchain_destroy(blockchain2);
+	blockchain_destroy(blockchain);
+	blockchain_destroy(blockchain2);
 
 	return (EXIT_SUCCESS);
 }

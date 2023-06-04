@@ -188,9 +188,9 @@ blockchain_t *blockchain_deserialize(char const *path)
 
 	if (!path)
 		return (NULL);
+	fd = open(path, O_RDONLY);
 	if (fd == -1)
 		return (NULL);
-	fd = open(path, O_RDONLY);
 	if (read(fd, buff, 8) == -1)
 		return (NULL);
 	if (buff[0] != '\x48' || buff[1] != '\x42' ||
