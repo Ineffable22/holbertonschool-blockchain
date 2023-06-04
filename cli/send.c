@@ -23,6 +23,13 @@ static int32_t check(char **arg, error_t *state)
 			     "Usage: send <amount> <receiver>";
 		return (1);
 	}
+	if (strlen(arg[2]) != 130)
+	{
+		state->code = 0;
+		state->msg = "Error: receiver is not a key\n"
+			     "Usage: send <amount> <receiver>";
+		return (1);
+	}
 	if (arg[3] != NULL)
 	{
 		state->code = 0;
@@ -66,16 +73,19 @@ void send(char **arg, session_t *session)
 	receiver = get_receiver(arg, session, receiver, pub);
 	if (!receiver)
 		return;
-	create_utxo(session, receiver, amount);
+	tx = create_utxo(session, receiver, amount);
+	if (!tx)
+		return;
 	EC_KEY_free(receiver);
+	printf("Transaction complete\n");
 	printf("Amount: %d\n", amount);
 	printf("Receiver: ");
 	_print_hex_buffer(pub, EC_PUB_LEN);
 	printf("\n");
-	printf("Sender: ");
+	printf("Sender:   ");
 	_print_hex_buffer(session->wallet->pub, EC_PUB_LEN);
 	printf("\n");
-	printf("Transaction: ");
+	printf("Transaction code: ");
 	_print_hex_buffer(tx->id, SHA256_DIGEST_LENGTH);
 	printf("\n");
 	session->state.code = 0;
@@ -120,9 +130,9 @@ EC_KEY *get_receiver(char **arg, session_t *session, EC_KEY *receiver,
  * @receiver: Receiver's public key
  * @amount:   Amount of coins to send
  *
- * Return: Nothing
+ * Return: A transaction
  */
-void create_utxo(session_t *session, EC_KEY *receiver, int32_t amount)
+transaction_t *create_utxo(session_t *session, EC_KEY *receiver, int32_t amount)
 {
 	transaction_t *tx = NULL;
 
@@ -132,13 +142,13 @@ void create_utxo(session_t *session, EC_KEY *receiver, int32_t amount)
 	{
 		session->state.code = 0;
 		session->state.msg = "Error: can not create transaction";
-		return;
+		return (NULL);
 	}
 	if (!transaction_is_valid(tx, session->blockchain->unspent))
 	{
 		session->state.code = 0;
 		session->state.msg = "Error: transaction is invalid";
-		return;
+		return (NULL);
 	}
 	if (!session->tx_pool)
 	{
@@ -147,7 +157,7 @@ void create_utxo(session_t *session, EC_KEY *receiver, int32_t amount)
 		{
 			session->state.code = 0;
 			session->state.msg = "Error: can not create transaction pool";
-			return;
+			return (NULL);
 		}
 	}
 
@@ -155,6 +165,7 @@ void create_utxo(session_t *session, EC_KEY *receiver, int32_t amount)
 	{
 		session->state.code = 0;
 		session->state.msg = "Error: can not add transaction to pool";
-		return;
+		return (NULL);
 	}
+	return (tx);
 }
