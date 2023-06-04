@@ -7,6 +7,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#define BACKUP "backup/save.hblk"
 #define SC(session, num, message) \
 	(session->state.code = num, session->state.msg = message)
 
@@ -18,6 +19,8 @@
  */
 typedef struct wallet_s
 {
+	char *username;
+	uint32_t balance;
 	uint8_t pub[EC_PUB_LEN];
 	EC_KEY *key;
 } wallet_t;
@@ -107,4 +110,8 @@ block_t *new_block(session_t *session, block_t **block, EC_KEY **miner,
 		   transaction_t **coin_tx);
 int add_tx(llist_node_t node, unsigned int idx, void *_block);
 int invalid_tx(llist_node_t node, void *unspent);
+transaction_t *create_utxo(session_t *session, EC_KEY *receiver, int32_t amount);
+void save_file(char **arg, session_t *session);
+uint32_t get_balance(llist_t *all_unspent, uint8_t pub_sender[EC_PUB_LEN]);
+
 #endif /* _CLI_H_ */
