@@ -34,8 +34,10 @@ int main(void)
 		if (session.state.code != 0)
 			break;
 	}
-	blockchain_destroy(session.blockchain);
-	llist_destroy(session.tx_pool, 0, free);
+	if (session.blockchain)
+		blockchain_destroy(session.blockchain);
+	llist_destroy(session.tx_pool, 1, free);
+	EC_KEY_free(session.wallet->key);
 	free(session.wallet);
 	free(buffer);
 	return (session.state.code > 0 ? session.state.code : 0);
@@ -107,6 +109,7 @@ void search_cmd(char **arg, session_t *session)
 	    {"save", serialize},
 	    {"help", help},
 	    {"exit", exit_cli},
+	    {"save_file", save_file},
 	    {NULL, NULL},
 	};
 
