@@ -37,6 +37,7 @@ void load(char **arg, session_t *session)
 {
 	EC_KEY *key = NULL;
 	uint8_t pub[EC_PUB_LEN] = {0};
+	uint32_t balance = 0;
 
 	if (check(arg, &session->state))
 		return;
@@ -54,15 +55,20 @@ void load(char **arg, session_t *session)
 		session->state.msg = "Error: cannot get public key";
 		return;
 	}
-
 	printf("Public key loaded: ");
 	_print_hex_buffer(pub, EC_PUB_LEN);
 	putchar('\n');
+	
 	session->state.code = 0;
-	session->state.msg = "session load";
+	session->state.msg = "session loaded";
 
 	if (!session->wallet)
 		session->wallet = calloc(1, sizeof(wallet_t));
 	memcpy(session->wallet->pub, pub, EC_PUB_LEN);
+	if (session->wallet->key)
+		EC_KEY_free(session->wallet->key);
 	session->wallet->key = key;
+	session->wallet->username = arg[1];
+	balance = get_balance(session->blockchain->unspent, session->wallet->pub);
+	session->wallet->balance = balance;
 }
