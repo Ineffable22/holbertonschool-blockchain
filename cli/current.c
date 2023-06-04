@@ -39,8 +39,12 @@ void current(char **arg, session_t *session)
 	}
 	else
 	{
+		printf("Username: %s\n", session->wallet->username);
 		printf("Public key: ");
 		_print_hex_buffer(session->wallet->pub, EC_PUB_LEN);
 		printf("\n");
+		printf("Wallet: \n");
+		printf("- Balance: %u\n", session->wallet->balance);
+
 	}
 }
