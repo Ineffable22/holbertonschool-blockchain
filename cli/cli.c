@@ -10,14 +10,16 @@ int main(void)
 	int32_t i = 0;
 	char *buffer = NULL;
 	size_t size = 0;
-	session_t session = {0};
+	session_t *session = NULL;
 
+	session = calloc(1, sizeof(*session));
+	session->tx_pool = llist_create(MT_SUPPORT_FALSE);
 	signal(SIGINT, response_signal);
-	start_blockchain(&session);
-	if (session.state.msg)
+	start_blockchain(session);
+	if (session->state.msg)
 	{
-		fprintf(stdout, "%s\n", session.state.msg);
-		session.state.msg = NULL;
+		fprintf(stdout, "%s\n", session->state.msg);
+		session->state.msg = NULL;
 	}
 	while (i != EOF)
 	{
@@ -25,22 +27,44 @@ int main(void)
 			write(1, "> ", 2);
 		i = getline(&buffer, &size, stdin);
 		if (i > 1)
-			parse_str(buffer, &session);
-		if (session.state.msg)
+			parse_str(buffer, session);
+		if (session->state.msg)
 		{
-			fprintf(stdout, "%s\n", session.state.msg);
-			session.state.msg = NULL;
+			fprintf(stdout, "%s\n", session->state.msg);
+			session->state.msg = NULL;
 		}
-		if (session.state.code != 0)
+		if (session->state.code != 0)
 			break;
 	}
-	if (session.blockchain)
-		blockchain_destroy(session.blockchain);
-	llist_destroy(session.tx_pool, 1, free);
-	EC_KEY_free(session.wallet->key);
-	free(session.wallet);
+	if (session->blockchain)
+		blockchain_destroy(session->blockchain);
+	if (session->tx_pool)
+	{
+		// int len = 0;
+		// int i = 0;
+
+		// len = llist_size(session->tx_pool);
+
+		// transaction_t *txo = NULL;
+		// for (i = 0; i < len; i++)
+		// {
+		// 	txo = llist_get_node_at(session->tx_pool, i);
+		// 	if (txo)
+		// 		transaction_destroy(txo);
+		// }
+		llist_destroy(session->tx_pool, 1, (void (*)(llist_node_t))transaction_destroy);
+	}
+	// llist_destroy(session->tx_pool, 1, free);
+	session->tx_pool = NULL;
+	
+
+	
+	EC_KEY_free(session->wallet->key);
+	free(session->wallet);
 	free(buffer);
-	return (session.state.code > 0 ? session.state.code : 0);
+	i = session->state.code;
+	free(session);
+	return i > 0 ? i : 0;
 }
 
 /**

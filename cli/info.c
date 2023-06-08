@@ -43,12 +43,12 @@ void info(char **arg, session_t *session)
 		session->state.msg = "Error: wallet not loaded";
 		return;
 	}
-	if (llist_size(session->tx_pool) == 0)
-	{
-		session->state.code = 0;
-		session->state.msg = "Error: transaction pool empty";
-		return;
-	}
+	// if (llist_size(session->tx_pool) == 0)
+	// {
+	// 	session->state.code = 0;
+	// 	session->state.msg = "Error: transaction pool empty";
+	// 	return;
+	// }
 	printf("Blockchain: \n");
 	printf("\tchain: %d\n", llist_size(session->blockchain->chain));
 	printf("\tUnspent: %d\n", llist_size(session->blockchain->unspent));

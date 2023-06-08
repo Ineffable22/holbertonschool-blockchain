@@ -106,7 +106,7 @@ void serialize(char **arg, session_t *session);
 EC_KEY *get_receiver(char **arg, session_t *session, EC_KEY *receiver,
 		     uint8_t pub[EC_PUB_LEN]);
 void add_utxo(session_t *session, wallet_t *wallet);
-block_t *new_block(session_t *session, block_t **block, EC_KEY **miner,
+block_t *new_block(session_t *session, block_t *block, EC_KEY *miner,
 		   transaction_t **coin_tx);
 int add_tx(llist_node_t node, unsigned int idx, void *_block);
 int invalid_tx(llist_node_t node, void *unspent);

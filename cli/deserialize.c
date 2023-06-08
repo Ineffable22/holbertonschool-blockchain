@@ -100,8 +100,8 @@ void start_blockchain(session_t *session)
  */
 void add_utxo(session_t *session, wallet_t *wallet)
 {
-	tx_out_t *out;
-	unspent_tx_out_t *unspent;
+	tx_out_t *out = NULL;
+	unspent_tx_out_t *unspent = NULL;
 	uint8_t transaction_id[SHA256_DIGEST_LENGTH];
 	uint8_t block_hash[SHA256_DIGEST_LENGTH];
 
@@ -126,7 +126,6 @@ void add_utxo(session_t *session, wallet_t *wallet)
 		return;
 	}
 	llist_add_node(session->blockchain->unspent, unspent, ADD_NODE_REAR);
-	wallet->balance = 1300;
 	if (session->wallet)
 	{
 		free(session->wallet);

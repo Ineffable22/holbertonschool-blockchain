@@ -64,27 +64,17 @@ int _add_block(block_t *block, session_t *session)
  */
 void mine(char **arg, session_t *session)
 {
-	block_t *block;
-	EC_KEY *miner;
+	block_t *block = NULL;
 	transaction_t *coin_tx = NULL;
 	tx_out_t *tx_out;
 	unspent_tx_out_t *utx;
 
 	if (!check_args(arg, session))
 		return;
-	miner = ec_create();
-	if (!miner)
-	{
-		session->state.code = 1;
-		session->state.msg = "Error: failed to create miner";
+	block = new_block(session, block, session->wallet->key, &coin_tx);
+	if (!block || !coin_tx)
 		return;
-	}
-	new_block(session, &block, &miner, &coin_tx);
-	if (!coin_tx)
-	{
-		EC_KEY_free(miner);
-		return;
-	}
+
 	session->blockchain->unspent = update_unspent(session->tx_pool,
 						      block->hash, session->blockchain->unspent);
 	if (!session->blockchain->unspent)
@@ -94,7 +84,7 @@ void mine(char **arg, session_t *session)
 		return;
 	}
 	llist_destroy(session->tx_pool, 1, (node_dtor_t)transaction_destroy);
-	session->tx_pool = llist_create(MT_SUPPORT_TRUE);
+	session->tx_pool = llist_create(MT_SUPPORT_FALSE);
 	tx_out = llist_get_head(coin_tx->outputs);
 	if (!tx_out)
 	{
@@ -111,9 +101,6 @@ void mine(char **arg, session_t *session)
 		block_destroy(block);
 		return;
 	}
-	llist_add_node(session->blockchain->chain,
-		       block, ADD_NODE_REAR);
-	EC_KEY_free(miner);
 	SC(session, 0, "Block mined successfully");
 }
 
@@ -126,41 +113,46 @@ void mine(char **arg, session_t *session)
  *
  * Return: Nothing
  */
-block_t *new_block(session_t *session, block_t **block, EC_KEY **miner,
+block_t *new_block(session_t *session, block_t *block, EC_KEY *miner,
 		   transaction_t **coin_tx)
 {
 	char *str = "Holberton School";
 	block_t *prev;
 
 	prev = llist_get_tail(session->blockchain->chain);
-	*block = block_create(prev, (int8_t *)str, (uint32_t)strlen(str));
+	block = block_create(prev, (int8_t *)str, (uint32_t)strlen(str));
 
-	if (_add_block(*block, session))
-	{
-		session->state.code = 0;
-		session->state.msg = "Error: Empty pool for session data";
-		return (NULL);
-	}
-	(*block)->info.difficulty = blockchain_difficulty(session->blockchain);
-	*coin_tx = coinbase_create(*miner, (*block)->info.index);
-	if (!*(coin_tx) || !coinbase_is_valid(*(coin_tx), (*block)->info.index))
+	// if (_add_block(block, session))
+	// {
+	// 	session->state.code = 0;
+	// 	session->state.msg = "Error: Empty pool for session data";
+	// 	return (NULL);
+	// }
+	block->info.difficulty = blockchain_difficulty(session->blockchain);
+	*coin_tx = coinbase_create(miner, block->info.index);
+	if (!*(coin_tx) || !coinbase_is_valid(*(coin_tx), block->info.index))
 	{
 		session->state.code = 1;
 		session->state.msg = "Error: failed to create coinbase";
 		transaction_destroy(*(coin_tx));
-		block_destroy(*block);
+		block_destroy(block);
 		return (NULL);
 	}
-	llist_add_node((*block)->transactions, *(coin_tx), ADD_NODE_FRONT);
-	block_mine(*block);
+	llist_add_node((block)->transactions, *(coin_tx), ADD_NODE_FRONT);
+	block_mine(block);
 	printf("MINED BLOCK:\n");
-	_block_print(*block, 0, "\t\t");
-	if (block_is_valid(*block, prev, session->blockchain->unspent))
+	_block_print(block, 0, "\t\t");
+	if (block_is_valid(block, prev, session->blockchain->unspent))
 	{
 		session->state.code = 1;
 		session->state.msg = "Error: failed to mine block";
-		block_destroy(*block);
+		block_destroy(block);
 		return (NULL);
 	}
-	return (*block);
+	llist_add_node(session->blockchain->chain,
+		       block, ADD_NODE_REAR);
+	printf("Block mined: [%u] ", block->info.difficulty);
+	_print_hex_buffer(block->hash, SHA256_DIGEST_LENGTH);
+	printf("\n");
+	return (block);
 }

@@ -28,6 +28,7 @@ static int32_t check(char **arg, error_t *state)
  */
 void current(char **arg, session_t *session)
 {
+	uint32_t balance = 0;
 	if (check(arg, &session->state))
 		return;
 
@@ -39,12 +40,14 @@ void current(char **arg, session_t *session)
 	}
 	else
 	{
+		balance = get_balance(session->blockchain->unspent, session->wallet->pub);
+		session->wallet->balance = balance;
 		printf("Username: %s\n", session->wallet->username);
 		printf("Public key: ");
 		_print_hex_buffer(session->wallet->pub, EC_PUB_LEN);
 		printf("\n");
-		printf("Wallet: \n");
-		printf("- Balance: %u\n", session->wallet->balance);
+		printf("Wallet Holbie Coin: \n");
+		printf("- Balance: %u\n", balance);
 
 	}
 }
